@@ -24,7 +24,15 @@ permissions:
 
 concurrency:
   group: community-leaderboard
-  cancel-in-progress: true
+  # A skipped job still cancels an in-progress run in its group before the job
+  # `if` is applied. The paired `labeled` event of an issue form must therefore
+  # never cancel the `opened` run it duplicates.
+  cancel-in-progress: >-
+    ${{
+      github.event_name != 'issues'
+      || github.event.action != 'labeled'
+      || github.event.issue.created_at != github.event.issue.updated_at
+    }}
 
 jobs:
   build:
