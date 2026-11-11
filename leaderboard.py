@@ -78,6 +78,8 @@ def validate_submission(data):
 
 
 def _esc(v):
+    if isinstance(v, float):
+        v = "%g" % v
     return (str(v) if v is not None else "").replace("&", "&amp;").replace(
         "<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
