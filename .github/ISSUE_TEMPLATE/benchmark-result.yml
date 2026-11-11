@@ -1,0 +1,119 @@
+name: Benchmark result
+description: Submit a completed codec-reverse-bench run to the community leaderboard.
+title: "[Result] "
+labels: ["benchmark-result"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit **one completed codec-reverse-bench run**. The page is built from
+        open issues labeled `benchmark-result`; edits are re-read and the page
+        rebuilds automatically. Keep exactly one fenced `json` block.
+
+        Preferred:
+
+        ```bash
+        python3 codec_bench/bench.py run --model provider/model
+        python3 codec_bench/bench.py submit --run RUN_ID --print
+        ```
+
+        Paste the printed JSON block below, or create the issue directly with:
+
+        ```bash
+        python3 codec_bench/bench.py submit --run RUN_ID --gh --repo andreasknopke/codec-reverse-bench-leaderboard
+        ```
+
+        If you are an LLM agent, follow
+        [submissions/TEMPLATE.md](https://github.com/andreasknopke/codec-reverse-bench-leaderboard/blob/main/submissions/TEMPLATE.md):
+        fill every field from the actual run, use `null` for unknown values,
+        and do not invent hardware, timings or codec parameters.
+
+  - type: textarea
+    id: result
+    attributes:
+      label: Result JSON
+      description: 'One fenced json block with schema "codec-bench/result@1".'
+      render: json
+      value: |
+        ```json
+        {
+          "schema": "codec-bench/result@1",
+          "run_id": "YYYYMMDD-HHMMSS-xxxxxx",
+          "started_at": "YYYY-MM-DDTHH:MM:SS+00:00",
+          "harness": {
+            "suite": "codec-reverse-bench",
+            "suite_version": "bc3-v2",
+            "commit": null,
+            "opencode_version": null,
+            "codec_spec": {
+              "frame": 0,
+              "hop": 0,
+              "keep": 0,
+              "step": 0.0,
+              "version": 0
+            },
+            "baseline": {
+              "codec": "AAC-LC",
+              "bitrate_kbps": 32,
+              "snr_db": 22.32,
+              "bytes": 74613
+            }
+          },
+          "model": {
+            "ref": "provider/model",
+            "name": null,
+            "provider_type": "local",
+            "params_b": null,
+            "quantization": null,
+            "weights_gb": null,
+            "context_tokens": null
+          },
+          "run": {
+            "total": 0.0,
+            "stopped_at_stage": 1,
+            "stage_results": [
+              {
+                "stage": 1,
+                "roundtrip_pass": false,
+                "decode": {
+                  "pass": false,
+                  "corr": 0.0,
+                  "snr_db": 0.0
+                },
+                "encoder_class": null,
+                "compress_score": null,
+                "encoder_bytes": null,
+                "encoder_snr_db": null,
+                "encoder_stoi": null,
+                "answers": {
+                  "correct": 0,
+                  "applicable": 15
+                },
+                "wall_s": 0,
+                "budget_s": 10800,
+                "leak_suspected": false
+              }
+            ],
+            "wall_s": 0,
+            "tokens": {},
+            "hardware": null,
+            "notes": null
+          },
+          "evidence": {
+            "level": "self-reported",
+            "score_sha256": null,
+            "notes": null
+          },
+          "source": "community"
+        }
+        ```
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: This run used the unmodified current benchmark suite and I did not edit score.json.
+          required: true

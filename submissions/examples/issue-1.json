@@ -1,0 +1,345 @@
+{
+  "schema": "codec-bench/result@1",
+  "run_id": "codec-20261111-115504",
+  "started_at": "2026-11-11T11:55:04+01:00",
+  "harness": {
+    "suite": "codec-reverse-bench",
+    "suite_version": "bc3-v2",
+    "commit": "693d64622a2f",
+    "opencode_version": "opencode v2.0.26",
+    "codec_spec": {
+      "frame": 512,
+      "hop": 256,
+      "keep": 128,
+      "step": 0.009999999776482582,
+      "version": 2
+    },
+    "baseline": {
+      "codec": "AAC-LC",
+      "bitrate_kbps": 32,
+      "snr_db": 22.32,
+      "bytes": 74613
+    }
+  },
+  "model": {
+    "ref": "tensorfold/qwen3.8-flash-next-nvfp4#xhigh",
+    "name": "Qwen3.8-Flash-Next NVFP4",
+    "provider_type": "local",
+    "params_b": null,
+    "quantization": "NVFP4",
+    "weights_gb": null,
+    "context_tokens": null
+  },
+  "run": {
+    "total": 67.0,
+    "stopped_at_stage": 3,
+    "stage_results": [
+      {
+        "stage": 1,
+        "roundtrip_pass": false,
+        "decode": {
+          "pass": false,
+          "corr": 0.013490811878944572,
+          "snr_db": -4.5952185385479645,
+          "lag_samples": 69140,
+          "corr_min": 0.99,
+          "snr_min_db": 30.0,
+          "sr_ref": 16000,
+          "sr_model": 16000,
+          "sample_rate": 16000,
+          "length_ratio": 1.0,
+          "reasons": [
+            "corr 0.0135 < 0.99",
+            "SNR -4.60 dB < 30.0"
+          ]
+        },
+        "encoder_class": "below_reference",
+        "compress_score": 78.7,
+        "encoder_bytes": 32942,
+        "encoder_snr_db": 17.56,
+        "encoder_stoi": 0.9085,
+        "answers": {
+          "correct": 11,
+          "total": 15,
+          "applicable": 15,
+          "fraction": 0.7333333333333333,
+          "fields": {
+            "magic": {
+              "correct": true,
+              "given": "BC3"
+            },
+            "version": {
+              "correct": true,
+              "given": 2
+            },
+            "sample_rate": {
+              "correct": true,
+              "given": 16000
+            },
+            "frame_size": {
+              "correct": true,
+              "given": 512
+            },
+            "hop_size": {
+              "correct": true,
+              "given": 256
+            },
+            "window": {
+              "correct": true,
+              "given": "sine"
+            },
+            "transform": {
+              "correct": true,
+              "given": "MDCT"
+            },
+            "kept_coefficients": {
+              "correct": true,
+              "given": 128
+            },
+            "quantization_step": {
+              "correct": true,
+              "given": 0.01
+            },
+            "header_bytes": {
+              "correct": false,
+              "given": 43
+            },
+            "counts_encoding": {
+              "correct": false,
+              "given": "per-frame fixed byte"
+            },
+            "index_coding": {
+              "correct": false,
+              "given": "unary delta"
+            },
+            "value_coding": {
+              "correct": false,
+              "given": "unary prefix + suffix"
+            },
+            "frame_count": {
+              "correct": true,
+              "given": 1127
+            },
+            "compression_ratio": {
+              "correct": true,
+              "given": 6.39
+            }
+          },
+          "zz_max": 20,
+          "zz_score": 14.666666666666666
+        },
+        "wall_s": 6948.094054698944,
+        "budget_s": null,
+        "leak_suspected": false
+      },
+      {
+        "stage": 2,
+        "roundtrip_pass": false,
+        "decode": {
+          "pass": false,
+          "corr": 0.013490811878944572,
+          "snr_db": -4.5952185385479645,
+          "lag_samples": 69140,
+          "corr_min": 0.99,
+          "snr_min_db": 30.0,
+          "sr_ref": 16000,
+          "sr_model": 16000,
+          "sample_rate": 16000,
+          "length_ratio": 1.0,
+          "reasons": [
+            "corr 0.0135 < 0.99",
+            "SNR -4.60 dB < 30.0"
+          ]
+        },
+        "encoder_class": "below_reference",
+        "compress_score": 27.6,
+        "encoder_bytes": 72000,
+        "encoder_snr_db": 6.17,
+        "encoder_stoi": 0.7703,
+        "answers": {
+          "correct": 11,
+          "total": 15,
+          "applicable": 15,
+          "fraction": 0.7333333333333333,
+          "fields": {
+            "magic": {
+              "correct": true,
+              "given": "BC3"
+            },
+            "version": {
+              "correct": true,
+              "given": 2
+            },
+            "sample_rate": {
+              "correct": true,
+              "given": 16000
+            },
+            "frame_size": {
+              "correct": true,
+              "given": 512
+            },
+            "hop_size": {
+              "correct": true,
+              "given": 256
+            },
+            "window": {
+              "correct": true,
+              "given": "sine"
+            },
+            "transform": {
+              "correct": true,
+              "given": "MDCT"
+            },
+            "kept_coefficients": {
+              "correct": true,
+              "given": 128
+            },
+            "quantization_step": {
+              "correct": true,
+              "given": 0.01
+            },
+            "header_bytes": {
+              "correct": false,
+              "given": 43
+            },
+            "counts_encoding": {
+              "correct": false,
+              "given": "per-frame fixed byte"
+            },
+            "index_coding": {
+              "correct": false,
+              "given": "unary delta"
+            },
+            "value_coding": {
+              "correct": false,
+              "given": "unary prefix + suffix"
+            },
+            "frame_count": {
+              "correct": true,
+              "given": 1127
+            },
+            "compression_ratio": {
+              "correct": true,
+              "given": 6.39
+            }
+          },
+          "zz_max": 10,
+          "zz_score": 7.333333333333333
+        },
+        "wall_s": 1800.026268005371,
+        "budget_s": null,
+        "leak_suspected": false
+      },
+      {
+        "stage": 3,
+        "roundtrip_pass": true,
+        "decode": {
+          "pass": true,
+          "corr": 0.9999999969650418,
+          "snr_db": 81.54543755128203,
+          "lag_samples": 0,
+          "corr_min": 0.99,
+          "snr_min_db": 30.0,
+          "sr_ref": 16000,
+          "sr_model": 16000,
+          "sample_rate": 16000,
+          "length_ratio": 1.0,
+          "reasons": []
+        },
+        "encoder_class": "below_reference",
+        "compress_score": 68.7,
+        "encoder_bytes": 55998,
+        "encoder_snr_db": 15.34,
+        "encoder_stoi": 0.9273,
+        "answers": {
+          "correct": 15,
+          "total": 15,
+          "applicable": 15,
+          "fraction": 1.0,
+          "fields": {
+            "magic": {
+              "correct": true,
+              "given": "BC3"
+            },
+            "version": {
+              "correct": true,
+              "given": 2
+            },
+            "sample_rate": {
+              "correct": true,
+              "given": 16000
+            },
+            "frame_size": {
+              "correct": true,
+              "given": 512
+            },
+            "hop_size": {
+              "correct": true,
+              "given": 256
+            },
+            "window": {
+              "correct": true,
+              "given": "sine"
+            },
+            "transform": {
+              "correct": true,
+              "given": "orthonormal DCT-II"
+            },
+            "kept_coefficients": {
+              "correct": true,
+              "given": 128
+            },
+            "quantization_step": {
+              "correct": true,
+              "given": 0.01
+            },
+            "header_bytes": {
+              "correct": true,
+              "given": 32
+            },
+            "counts_encoding": {
+              "correct": true,
+              "given": "varint (LEB128)"
+            },
+            "index_coding": {
+              "correct": true,
+              "given": "gap stream with canonical Huffman codes"
+            },
+            "value_coding": {
+              "correct": true,
+              "given": "zigzag + canonical Huffman codes"
+            },
+            "frame_count": {
+              "correct": true,
+              "given": 1127
+            },
+            "compression_ratio": {
+              "correct": true,
+              "given": 6.39
+            }
+          },
+          "zz_max": 10,
+          "zz_score": 10.0
+        },
+        "wall_s": 1200.0124924182892,
+        "budget_s": null,
+        "leak_suspected": false
+      }
+    ],
+    "wall_s": 9948.1,
+    "tokens": {
+      "input_tokens": 77658,
+      "output_tokens": 23778,
+      "reasoning_tokens": 33500,
+      "sessions": 1
+    },
+    "hardware": "NVIDIA DGX Spark (GB10) / 128 GB unified memory",
+    "notes": null
+  },
+  "evidence": {
+    "level": "self-reported",
+    "score_sha256": "cd6191af3e45a88eff8c506f191f5886432054c9b9c0a7503f4b9831758dff34",
+    "notes": null
+  },
+  "source": "community"
+}

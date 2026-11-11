@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Result schema and template
+    url: https://github.com/andreasknopke/codec-reverse-bench-leaderboard/blob/main/submissions/TEMPLATE.md
+    about: JSON format, validation rules, and LLM/agent instructions.
