@@ -84,6 +84,16 @@ def _esc(v):
         "<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
+def _evolve_stage(run):
+    """2 if the run's best encoder beat the AAC anchor (Compress >= 100)."""
+    best = None
+    for st in run.get("stage_results") or []:
+        c = st.get("compress_score")
+        if isinstance(c, (int, float)) and (best is None or c > best):
+            best = c
+    return 2 if best is not None and best >= 100 else 1
+
+
 def _stage_cell(st):
     mark = "PASS" if st.get("roundtrip_pass") else "fail"
     enc = st.get("compress_score")
@@ -108,13 +118,15 @@ def render_site(results, generated):
             "<td><div class=model>%s</div><div class=muted>%s</div>"
             "<div class=muted>frame %s · keep %s · step %s</div></td>"
             "<td>%s</td><td class=total>%.1f</td>"
+            "<td class=evolve data-e=\"%d\">%d</td>"
             "<td>S%s</td><td>%s</td><td>%.1f</td><td>%s</td><td>%s</td>"
             "<td><a href=\"%s\">#%s</a></td></tr>"
             % (i, _esc(model.get("name") or model.get("ref")), _esc(model.get("ref")),
                _esc(spec.get("frame", "?")), _esc(spec.get("keep", "?")),
                _esc(spec.get("step", "?")),
                _esc(run.get("hardware") or "–"),
-               float(run.get("total") or 0), _esc(run.get("stopped_at_stage")),
+               float(run.get("total") or 0), _evolve_stage(run), _evolve_stage(run),
+               _esc(run.get("stopped_at_stage")),
                " ".join(_stage_cell(s) for s in stages), float(best),
                _esc(r.get("started_at", "")[:10]),
                _esc((r.get("evidence") or {}).get("level", "self-reported")),
@@ -133,6 +145,8 @@ table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #23262d;vertical-align:top}
 th{color:#9aa0a6;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 .rank{color:#9aa0a6}.total{font-weight:700;font-size:16px}
+.evolve{color:#8b9096;font-weight:600}
+.evolve[data-e="2"]{color:#7ee787;font-weight:700}
 .model{font-weight:600}.muted{color:#8b9096;font-size:12px}
 a{color:#6cb6ff;text-decoration:none}a:hover{text-decoration:underline}
 .note{color:#9aa0a6;font-size:13px;margin-top:22px;line-height:1.5}
@@ -143,7 +157,7 @@ code{background:#1a1d23;padding:1px 4px;border-radius:4px}
 score anchored at AAC-LC 32 kbit/s (100 = AAC quality; above 100 beats it).
 Generated __GENERATED__ from the open <code>benchmark-result</code> issues.</p>
 <table>
-<thead><tr><th>#</th><th>Model</th><th>Hardware</th><th>Total</th><th>Stopped</th>
+<thead><tr><th>#</th><th>Model</th><th>Hardware</th><th>Total</th><th>Evolve</th><th>Stopped</th>
 <th>Stages</th><th>Best Compress</th><th>Date</th><th>Evidence</th><th>Issue</th></tr></thead>
 <tbody>
 __ROWS__
@@ -151,13 +165,15 @@ __ROWS__
 <p class="note">Ranked by total, then by the stage the run stopped at, then wall time.
 Results are self-reported unless marked <b>verified</b>. The codec instance is
 randomised per run, so only the Compress score is comparable across runs.
+<b>Evolve 2</b> marks a run whose encoder beat the AAC anchor (Compress &ge; 100);
+that codec is a candidate for the next baseline generation.
 Submit by opening an issue with the <b>Benchmark result</b> template; see
 <code>submissions/TEMPLATE.md</code>.</p>
 </main></body></html>
 """
     return html.replace("__GENERATED__", _esc(generated)).replace(
         "__ROWS__", "\n".join(rows) or
-        "<tr><td colspan=10 class=muted>No results yet.</td></tr>")
+        "<tr><td colspan=11 class=muted>No results yet.</td></tr>")
 
 
 def cmd_site(args):
