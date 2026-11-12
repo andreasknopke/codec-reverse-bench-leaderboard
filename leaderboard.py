@@ -170,7 +170,10 @@ def cmd_site(args):
         labels = {label.get("name") for label in (issue.get("labels") or [])}
         if issue.get("state") not in (None, "OPEN", "open"):
             continue
-        if LABEL not in labels or HIDDEN_LABEL in labels:
+        # A valid result block is adopted even without the label (issues
+        # created via `gh issue create` do not run the issue form). `hidden`
+        # is the only opt-out.
+        if HIDDEN_LABEL in labels:
             continue
         data, errs = extract_result_block(issue.get("body") or "")
         if data is not None:

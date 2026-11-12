@@ -1,8 +1,8 @@
 # Community result template
 
 The public [codec-reverse-bench leaderboard](https://andreasknopke.github.io/codec-reverse-bench-leaderboard/)
-is built from open GitHub issues labeled `benchmark-result` in this repository.
-Each issue must contain exactly one fenced `json` block with
+is built from open GitHub issues in this repository. Each issue must contain
+exactly one fenced `json` block with
 `"schema": "codec-bench/result@1"`.
 
 ## Preferred: let the harness write it

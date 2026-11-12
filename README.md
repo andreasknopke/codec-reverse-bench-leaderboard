@@ -14,7 +14,9 @@ nothing here can leak the codec to a model under test.
 ## Submit a result
 
 Open a new issue and pick **Benchmark result** — the form contains the JSON
-skeleton. Preferred: let the harness print the block and create the issue:
+skeleton and applies the `benchmark-result` label. Issues created without the
+label are adopted automatically as long as they contain a valid fenced result
+block. Preferred: let the harness print the block and create the issue:
 
 ```bash
 python3 codec_bench/bench.py submit --run RUN_ID --print
