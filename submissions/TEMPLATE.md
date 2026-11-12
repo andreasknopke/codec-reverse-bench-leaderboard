@@ -57,6 +57,11 @@ Important values:
   first verified roundtrip.
 - `run.stopped_at_stage` is the stage where the run ended (passed, ran out of
   budget, or was aborted).
+- `run.evolve` is the **codec generation** the run was benchmarked on (1 = the
+  original codec, 2 = the DeepSeek-improved codec, ...). The generation advances
+  only when a run finishes **stage 1** and its encoder beats the baseline; the
+  next runs then use that codec. A better encoder in a later stage does not
+  advance it.
 - `run.stage_results` keeps every executed stage: decode result, encoder
   class/Compress score/bytes/SNR/STOI, sub-goal answers, wall time, budget and
   the leak verdict.

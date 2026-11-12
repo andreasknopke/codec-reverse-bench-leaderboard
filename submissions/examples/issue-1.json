@@ -334,7 +334,8 @@
       "sessions": 1
     },
     "hardware": "NVIDIA DGX Spark (GB10) / 128 GB unified memory",
-    "notes": null
+    "notes": null,
+    "evolve": 2
   },
   "evidence": {
     "level": "self-reported",

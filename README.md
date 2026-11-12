@@ -54,6 +54,10 @@ roundtrip; stages 2–4 carry over the previous work.
   filled local-model example.
 - [`leaderboard.py`](leaderboard.py) — the standalone renderer used by CI.
 
+`Evolve` is the codec generation a run was benchmarked on. The generation
+advances only when a run finishes **stage 1** and its encoder beats the
+baseline; the next runs then use that codec.
+
 Ranking: total score (descending), then the stage the run stopped at (earlier
 is better), then total wall time (ascending). `evidence.level` is
 `self-reported` unless a maintainer verifies the result.

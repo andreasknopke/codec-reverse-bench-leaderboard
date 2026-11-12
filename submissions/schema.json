@@ -5,9 +5,19 @@
   "description": "One completed run of the codec-reverse-bench harness, as embedded in a GitHub issue labeled benchmark-result.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "run_id", "started_at", "harness", "model", "run", "evidence"],
+  "required": [
+    "schema",
+    "run_id",
+    "started_at",
+    "harness",
+    "model",
+    "run",
+    "evidence"
+  ],
   "properties": {
-    "schema": {"const": "codec-bench/result@1"},
+    "schema": {
+      "const": "codec-bench/result@1"
+    },
     "run_id": {
       "type": "string",
       "minLength": 8,
@@ -21,33 +31,87 @@
     "harness": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["suite", "suite_version", "codec_spec", "baseline"],
+      "required": [
+        "suite",
+        "suite_version",
+        "codec_spec",
+        "baseline"
+      ],
       "properties": {
-        "suite": {"const": "codec-reverse-bench"},
-        "suite_version": {"type": "string", "minLength": 1},
-        "commit": {"type": ["string", "null"]},
-        "opencode_version": {"type": ["string", "null"]},
+        "suite": {
+          "const": "codec-reverse-bench"
+        },
+        "suite_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "opencode_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "codec_spec": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["frame", "hop", "keep", "step", "version"],
+          "required": [
+            "frame",
+            "hop",
+            "keep",
+            "step",
+            "version"
+          ],
           "properties": {
-            "frame": {"type": "integer", "description": "MDCT frame size in samples."},
-            "hop": {"type": "integer", "description": "MDCT hop size in samples."},
-            "keep": {"type": "integer", "description": "Kept MDCT coefficients per frame."},
-            "step": {"type": "number", "description": "Quantization step."},
-            "version": {"type": "integer", "description": "Bitstream version (2-9)."}
+            "frame": {
+              "type": "integer",
+              "description": "MDCT frame size in samples."
+            },
+            "hop": {
+              "type": "integer",
+              "description": "MDCT hop size in samples."
+            },
+            "keep": {
+              "type": "integer",
+              "description": "Kept MDCT coefficients per frame."
+            },
+            "step": {
+              "type": "number",
+              "description": "Quantization step."
+            },
+            "version": {
+              "type": "integer",
+              "description": "Bitstream version (2-9)."
+            }
           }
         },
         "baseline": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["codec", "bitrate_kbps", "snr_db", "bytes"],
+          "required": [
+            "codec",
+            "bitrate_kbps",
+            "snr_db",
+            "bytes"
+          ],
           "properties": {
-            "codec": {"const": "AAC-LC"},
-            "bitrate_kbps": {"const": 32},
-            "snr_db": {"const": 22.32},
-            "bytes": {"const": 74613}
+            "codec": {
+              "const": "AAC-LC"
+            },
+            "bitrate_kbps": {
+              "const": 32
+            },
+            "snr_db": {
+              "const": 22.32
+            },
+            "bytes": {
+              "const": 74613
+            }
           }
         }
       }
@@ -55,45 +119,160 @@
     "model": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["ref", "provider_type"],
+      "required": [
+        "ref",
+        "provider_type"
+      ],
       "properties": {
-        "ref": {"type": "string", "minLength": 1, "description": "Provider/model id as accepted by the harness."},
-        "name": {"type": ["string", "null"]},
-        "provider_type": {"const": "local"},
-        "params_b": {"type": ["number", "null"]},
-        "quantization": {"type": ["string", "null"]},
-        "weights_gb": {"type": ["number", "null"]},
-        "context_tokens": {"type": ["integer", "null"]}
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Provider/model id as accepted by the harness."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provider_type": {
+          "const": "local"
+        },
+        "params_b": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "quantization": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "weights_gb": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "context_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
       }
     },
     "run": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["total", "stopped_at_stage", "stage_results"],
+      "required": [
+        "total",
+        "stopped_at_stage",
+        "stage_results"
+      ],
       "properties": {
-        "total": {"type": "number", "minimum": 0, "description": "Total score; 100 = AAC-LC 32 kbit/s level."},
-        "stopped_at_stage": {"type": "integer", "minimum": 1, "maximum": 4},
-        "wall_s": {"type": ["number", "null"]},
+        "total": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total score; 100 = AAC-LC 32 kbit/s level."
+        },
+        "stopped_at_stage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "evolve": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "Codec generation the run was benchmarked on. It advances only when a run finishes stage 1 and its encoder beats the baseline; the next runs then use that codec."
+        },
+        "wall_s": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
         "stage_results": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["stage", "roundtrip_pass"],
+            "required": [
+              "stage",
+              "roundtrip_pass"
+            ],
             "properties": {
-              "stage": {"type": "integer", "minimum": 1, "maximum": 4},
-              "roundtrip_pass": {"type": "boolean"},
-              "decode": {"type": ["object", "null"]},
-              "encoder_class": {"type": ["string", "null"]},
-              "compress_score": {"type": ["number", "null"]},
-              "encoder_bytes": {"type": ["integer", "null"]},
-              "encoder_snr_db": {"type": ["number", "null"]},
-              "encoder_stoi": {"type": ["number", "null"]},
-              "answers": {"type": ["object", "null"]},
-              "wall_s": {"type": ["number", "null"]},
-              "budget_s": {"type": ["integer", "null"]},
-              "leak_suspected": {"type": "boolean"}
+              "stage": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "roundtrip_pass": {
+                "type": "boolean"
+              },
+              "decode": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "encoder_class": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "compress_score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "encoder_bytes": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "encoder_snr_db": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "encoder_stoi": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "answers": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "wall_s": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "budget_s": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "leak_suspected": {
+                "type": "boolean"
+              }
             }
           }
         },
@@ -101,26 +280,65 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "input_tokens": {"type": "integer"},
-            "output_tokens": {"type": "integer"},
-            "reasoning_tokens": {"type": "integer"},
-            "sessions": {"type": "integer"}
+            "input_tokens": {
+              "type": "integer"
+            },
+            "output_tokens": {
+              "type": "integer"
+            },
+            "reasoning_tokens": {
+              "type": "integer"
+            },
+            "sessions": {
+              "type": "integer"
+            }
           }
         },
-        "hardware": {"type": ["string", "null"]},
-        "notes": {"type": ["string", "null"]}
+        "hardware": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
     "evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["level"],
+      "required": [
+        "level"
+      ],
       "properties": {
-        "level": {"enum": ["self-reported", "verified"]},
-        "score_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
-        "notes": {"type": ["string", "null"]}
+        "level": {
+          "enum": [
+            "self-reported",
+            "verified"
+          ]
+        },
+        "score_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
-    "source": {"type": "string", "default": "community"}
+    "source": {
+      "type": "string",
+      "default": "community"
+    }
   }
 }
