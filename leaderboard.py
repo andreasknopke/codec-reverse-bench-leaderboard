@@ -19,9 +19,29 @@ import sys
 
 SUBMISSION_SCHEMA = "codec-bench/result@1"
 SUITE_NAME = "codec-reverse-bench"
-SUITE_VERSION = "bc3-v2"
+SUITE_VERSION = "bc3-v3"
 LABEL = "benchmark-result"
 HIDDEN_LABEL = "hidden"
+
+# bc3-v3 solves the quantization step per run so the reference bitstream lands
+# in a band around the AAC-LC anchor; runs outside that band (all bc3-v2 runs)
+# had a materially easier or harder task and are marked as such.
+BAND_CENTER = 74613
+BAND_TOLERANCE = 0.04
+
+
+def difficulty(reference_bytes):
+    """Return (label, css class) for a reference bitstream size, or None."""
+    if (not isinstance(reference_bytes, int) or isinstance(reference_bytes, bool)
+            or reference_bytes <= 0):
+        return None
+    lo = BAND_CENTER * (1 - BAND_TOLERANCE)
+    hi = BAND_CENTER * (1 + BAND_TOLERANCE)
+    if reference_bytes < lo:
+        return ("easier", "easier")
+    if reference_bytes > hi:
+        return ("harder", "harder")
+    return ("in band", "inband")
 
 
 def extract_result_block(body):
@@ -61,6 +81,9 @@ def validate_submission(data):
         for key in ("frame", "hop", "keep", "step", "version"):
             if key not in spec:
                 errors.append("harness.codec_spec.%s missing" % key)
+    if harness.get("reference_bytes") is not None and difficulty(
+            harness.get("reference_bytes")) is None:
+        errors.append("harness.reference_bytes must be a positive integer or null")
     model = data.get("model") or {}
     if not isinstance(model.get("ref"), str) or not model["ref"].strip():
         errors.append("model.ref must be a non-empty string")
@@ -105,19 +128,27 @@ def render_site(results, generated):
         issue = r.get("_issue") or {}
         ev = run.get("evolve")
         ev_s = str(ev) if isinstance(ev, int) else "–"
+        harness = r.get("harness") or {}
+        diff = difficulty(harness.get("reference_bytes"))
+        if diff:
+            inst = ("<td><span class=%s>%s</span>"
+                    "<br><span class=muted>%s B</span></td>"
+                    % (diff[1], diff[0], format(harness["reference_bytes"], ",d")))
+        else:
+            inst = "<td class=muted>?</td>"
         rows.append(
             "<tr><td class=rank>%d</td>"
             "<td><div class=model>%s</div><div class=muted>%s</div>"
             "<div class=muted>frame %s · keep %s · step %s</div></td>"
             "<td>%s</td><td class=total>%.1f</td>"
-            "<td class=evolve>%s</td>"
+            "<td class=evolve>%s</td>%s"
             "<td>S%s</td><td>%s</td><td>%.1f</td><td>%s</td><td>%s</td>"
             "<td><a href=\"%s\">#%s</a></td></tr>"
             % (i, _esc(model.get("name") or model.get("ref")), _esc(model.get("ref")),
                _esc(spec.get("frame", "?")), _esc(spec.get("keep", "?")),
                _esc(spec.get("step", "?")),
                _esc(run.get("hardware") or "–"),
-               float(run.get("total") or 0), ev_s,
+               float(run.get("total") or 0), ev_s, inst,
                _esc(run.get("stopped_at_stage")),
                " ".join(_stage_cell(s) for s in stages), float(best),
                _esc(r.get("started_at", "")[:10]),
@@ -138,6 +169,9 @@ th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #23262d;vertical-
 th{color:#9aa0a6;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 .rank{color:#9aa0a6}.total{font-weight:700;font-size:16px}
 .evolve{color:#7ee787;font-weight:700}
+.easier{color:#d29922;font-weight:600}
+.harder{color:#f85149;font-weight:600}
+.inband{color:#7ee787;font-weight:600}
 .model{font-weight:600}.muted{color:#8b9096;font-size:12px}
 a{color:#6cb6ff;text-decoration:none}a:hover{text-decoration:underline}
 .note{color:#9aa0a6;font-size:13px;margin-top:22px;line-height:1.5}
@@ -148,14 +182,19 @@ code{background:#1a1d23;padding:1px 4px;border-radius:4px}
 score anchored at AAC-LC 32 kbit/s (100 = AAC quality; above 100 beats it).
 Generated __GENERATED__ from the open <code>benchmark-result</code> issues.</p>
 <table>
-<thead><tr><th>#</th><th>Model</th><th>Hardware</th><th>Total</th><th>Evolve</th><th>Stopped</th>
+<thead><tr><th>#</th><th>Model</th><th>Hardware</th><th>Total</th><th>Evolve</th><th>Instance</th><th>Stopped</th>
 <th>Stages</th><th>Best Compress</th><th>Date</th><th>Evidence</th><th>Issue</th></tr></thead>
 <tbody>
 __ROWS__
 </tbody></table>
 <p class="note">Ranked by total, then by the stage the run stopped at, then wall time.
-Results are self-reported unless marked <b>verified</b>. The codec instance is
-randomised per run, so only the Compress score is comparable across runs.
+Results are self-reported unless marked <b>verified</b>. Since suite
+<code>bc3-v3</code> the reference bitstream is solved into a &plusmn;4&nbsp;% band
+around the AAC anchor of 74&nbsp;613 bytes, so runs are directly comparable.
+Older <code>bc3-v2</code> runs drew their quantization step from a wide range:
+<span class=easier>easier</span> marks a reference below the band (less
+bitstream to reverse-engineer), <span class=harder>harder</span> one above it,
+<span class=inband>in band</span> a run that already matches the v3 band.
 <b>Evolve</b> is the codec generation a run was benchmarked on. The generation
 advances only when a run finishes <b>stage 1</b> and its encoder beats the
 baseline; the next runs then use that codec.
@@ -165,7 +204,7 @@ Submit by opening an issue with the <b>Benchmark result</b> template; see
 """
     return html.replace("__GENERATED__", _esc(generated)).replace(
         "__ROWS__", "\n".join(rows) or
-        "<tr><td colspan=11 class=muted>No results yet.</td></tr>")
+        "<tr><td colspan=12 class=muted>No results yet.</td></tr>")
 
 
 def cmd_site(args):
