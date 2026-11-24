@@ -82,6 +82,13 @@ jobs:
         with:
           path: docs
 
+      # deploy-pages reads artifact metadata from the Pages API, which can lag
+      # a few seconds behind upload-artifact finalization ("Found 0 artifact(s)"
+      # with a green upload step; observed 2026-11-24). Retry with backoff.
       - name: Deploy Pages
         id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - name: Retry Deploy Pages
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
